@@ -11,4 +11,7 @@ korge.keystore
 local.properties
 src/main/*
 .DS_Store
+/.fleet
+/.kotlin-js-store
 
+gradlew
