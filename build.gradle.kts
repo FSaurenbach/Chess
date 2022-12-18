@@ -9,9 +9,6 @@ korge {
 
 
 	targetAll()
-	
-	targetJvm()
-	targetJs()
 
 	serializationJson()
 }

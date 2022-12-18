@@ -15,3 +15,10 @@ src/main/*
 /.kotlin-js-store
 
 gradlew
+/kotlin-js-store/
+/deps/
+/.gradle/
+/.idea/
+/build/
+/gradle/
+/.fleet/
