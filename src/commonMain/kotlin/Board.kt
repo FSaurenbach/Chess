@@ -1,7 +1,6 @@
 import com.soywiz.korge.input.*
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.*
-
 class Board : Container() {
 
     private val white = Colors["#f0d9b5"]
@@ -9,7 +8,7 @@ class Board : Container() {
     private var rect: SolidRect? = null
 
     init {
-
+        var firstTime = true
         for (i in 0..7)
             for (j in 0..7) {
                 rect = SolidRect(fieldSize, fieldSize, if ((j + i) % 2 != 0) black else white)
@@ -18,7 +17,14 @@ class Board : Container() {
                 addChild(rect!!)
                 rectsBoard[i to j] = rect!!
                 rect.onUp {
-                    clickListener(i to j)
+                    checkMove(i to j)
+                }
+                rect!!.onCollision {
+                    if (it is Piece){
+                        it.setOldPositionPair(i to j)
+                        TODO("Sobald piece gemoved wird variable so ändern dass diese funktion wieder loslegen kann und nicht nur einmal")
+                        
+                    }
                 }
             }
         for (i in 0..7) {
@@ -36,12 +42,5 @@ class Board : Container() {
 
     }
 
-    private fun clickListener(pair: Pair<Int, Int>) {
-        if (pawn1clicked) {
-            rectsBoard[pair]?.let { stage!!.findViewByName(lastClicked)!!.centerOn(it) }
-            lastClicked = ""
-            pawn1clicked = false
-        }
 
-    }
 }
