@@ -1,24 +1,23 @@
-import com.soywiz.korge.scene.Scene
-import com.soywiz.korge.view.SContainer
-import com.soywiz.korge.view.name
+import com.soywiz.korge.scene.*
+import com.soywiz.korge.view.*
+import com.soywiz.korim.format.*
+import com.soywiz.korio.file.std.*
 
 class GameScene : Scene() {
     override suspend fun SContainer.sceneMain() {
-        var board = addChild(Board())
+        addChild(Board())
         var pieces = listOf(
-            Piece("White", 1, 2).name("WhitePawn1"),
-            Piece("White", 2, 2).name("WhitePawn2"),
-            Piece("White", 3, 2).name("WhitePawn3"),
-            Piece("White", 4, 2).name("WhitePawn4"),
-            Piece("White", 5, 2).name("WhitePawn5"),
-            Piece("White", 6, 2).name("WhitePawn6"),
-            Piece("White", 7, 2).name("WhitePawn7"),
-            Piece("White", 8, 2).name("WhitePawn8"),
+            Piece("Pawn","White", 1, 2, image(resourcesVfs["pawn.png"].readBitmap())).name("WhitePawn1"),
+            Piece("Pawn", "White", 2, 2, image(resourcesVfs["pawn.png"].readBitmap())).name("WhitePawn2"),
+            Piece("Pawn", "White", 3, 2, image(resourcesVfs["pawn.png"].readBitmap())).name("WhitePawn3"),
+            Piece("Pawn", "White", 4, 2, image(resourcesVfs["pawn.png"].readBitmap())).name("WhitePawn4"),
+            Piece("Pawn", "White", 5, 2, image(resourcesVfs["pawn.png"].readBitmap())).name("WhitePawn5"),
+            Piece("Pawn", "White", 6, 2, image(resourcesVfs["pawn.png"].readBitmap())).name("WhitePawn6"),
+            Piece("Pawn", "White", 7, 2, image(resourcesVfs["pawn.png"].readBitmap())).name("WhitePawn7"),
+            Piece("Pawn", "White", 8, 2, image(resourcesVfs["pawn.png"].readBitmap())).name("WhitePawn8"),
 
 
-
-
-        )
+            )
         addChildren(pieces)
     }
 }

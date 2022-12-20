@@ -1,6 +1,7 @@
 import com.soywiz.korge.input.*
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.*
+
 class Board : Container() {
 
     private val white = Colors["#f0d9b5"]
@@ -8,7 +9,6 @@ class Board : Container() {
     private var rect: SolidRect? = null
 
     init {
-        var firstTime = true
         for (i in 0..7)
             for (j in 0..7) {
                 rect = SolidRect(fieldSize, fieldSize, if ((j + i) % 2 != 0) black else white)
@@ -20,10 +20,11 @@ class Board : Container() {
                     checkMove(i to j)
                 }
                 rect!!.onCollision {
-                    if (it is Piece){
-                        it.setOldPositionPair(i to j)
-                        TODO("Sobald piece gemoved wird variable so ändern dass diese funktion wieder loslegen kann und nicht nur einmal")
-                        
+                    if (it is Piece) {
+                        if (it.moved) {
+                            it.setOldPositionPair(i to j)
+                            it.moved = false
+                        }
                     }
                 }
             }
