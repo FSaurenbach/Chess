@@ -1,12 +1,14 @@
-import com.soywiz.korge.input.*
+import com.soywiz.korge.input.onUp
 import com.soywiz.korge.view.*
 
-class Piece(type:String, color: String, pieceX: Int, pieceY: Int, image: Image) : Container() {
+class Piece(var type: String, color: String, pieceX: Int, pieceY: Int, image: Image) : Container() {
     private var piece = image
-    var type = type
-    var moved = true
     private var oldPositionPair: Pair<Int, Int>? = null
+    var moved = true
+    var color = color
+
     var pawnFirstMove = false
+
     init {
         if (type == "Pawn") {
             pawnFirstMove = true
@@ -17,18 +19,6 @@ class Piece(type:String, color: String, pieceX: Int, pieceY: Int, image: Image) 
         addChild(piece)
         centerPiece(piece)
         move(piece)
-    }
-
-    fun p(px: Double, py: Double) {
-        piece.xy(px * 64, py * 64)
-    }
-
-    fun px(px: Double) {
-        piece.x = px * 64
-    }
-
-    fun py(py: Double) {
-        piece.y = py * 64
     }
 
     fun setOldPositionPair(pair: Pair<Int, Int>) {
@@ -72,26 +62,50 @@ fun Board.checkMove(pair: Pair<Int, Int>) {
         val oldX = lastClickedPiece.getOldPositionPair()!!.first
         val oldY = lastClickedPiece.getOldPositionPair()!!.second
         clicked = false
-        when (lastClickedPiece.type){
-            "Pawn" -> {
-                if (newX == oldX && newY == oldY + 1){
-                    lastClickedPiece.pawnFirstMove = false
-                    lastClickedPiece.setOldPositionPair(newX to newY)
-                    rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                    lastClickedPiece.moved = true
+        when (lastClickedPiece.color) {
+            "White" -> {
+                when (lastClickedPiece.type) {
+                    "Pawn" -> {
+                        if (newX == oldX && newY == oldY + 1) {
+                            lastClickedPiece.pawnFirstMove = false
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                        } else if (newX == oldX && newY == oldY + 2 && lastClickedPiece.pawnFirstMove) {
+                            lastClickedPiece.pawnFirstMove = false
+
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+
+                        }
+                    }
+
                 }
-                else if (newX == oldX && newY == oldY + 2 && lastClickedPiece.pawnFirstMove){
-                    lastClickedPiece.pawnFirstMove = false
+            }
+            "Black" -> {
+                when (lastClickedPiece.type) {
+                    "Pawn" -> {
+                        if (newX == oldX && newY == oldY - 1) {
+                            lastClickedPiece.pawnFirstMove = false
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                        } else if (newX == oldX && newY == oldY - 2 && lastClickedPiece.pawnFirstMove) {
+                            lastClickedPiece.pawnFirstMove = false
 
-                    lastClickedPiece.setOldPositionPair(newX to newY)
-                    rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                    lastClickedPiece.moved = true
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+
+                        }
+                    }
+
                 }
-
-
-
-
             }
         }
+
+
     }
 }
+
