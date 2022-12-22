@@ -12,8 +12,8 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
         if (type == "Pawn") {
             pawnFirstMove = true
         }
-        piece.scaledWidth = fieldSize / 1.2
-        piece.scaledHeight = fieldSize / 1.2
+        piece.scaledWidth = fieldSize / 1.000001
+        piece.scaledHeight = fieldSize / 1.000001
         piece.xy(pieceX * globalWith / 8, pieceY * globalHeight / 8)
         addChild(piece)
         centerPiece(piece)
@@ -55,24 +55,55 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                 if (clicked && (lastClicked != this.name!!) && (lastClickedPiece.color != this.color) ) {
                     when (lastClickedPiece.color){
                         "White" -> {
-                            if ((newX == oldX +1 || newX == oldX -1) && newY == oldY + 1 && whiteTurn){
-                                this.removeFromParent()
-                                rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
-                                lastClickedPiece.setOldPositionPair(newX to newY)
-                                lastClickedPiece.moved = false
-                                clicked = false
-                                whiteTurn = false
+                            when (lastClickedPiece.type){
+                                "Pawn"-> {
+                                    if ((newX == oldX +1 || newX == oldX -1) && newY == oldY + 1 && whiteTurn){
+                                        this.removeFromParent()
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
+                                        lastClickedPiece.moved = false
+                                        clicked = false
+                                        whiteTurn = false
+                                    }
+                                    else{
+                                        clicked = false
+                                        lastClicked = ""
+                                    }
+                                }
+                                "Rook"-> {
+                                    if (newY == oldY && newX != oldX && whiteTurn){
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX!! to newY)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = false
+                                    }
+                                    else if (newX == oldX && newY != oldY && whiteTurn){
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX to newY!!)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = false
+                                    }
+                                }
+
                             }
+
                         }
                         "Black" -> {
-                            if ((newX == oldX +1 || newX == oldX -1) && newY == oldY - 1 && !whiteTurn){
-                                this.removeFromParent()
-                                rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
-                                lastClickedPiece.setOldPositionPair(newX to newY)
-                                lastClickedPiece.moved = false
-                                clicked = false
-                                whiteTurn = true
+                            when (lastClickedPiece.type){
+                                "Pawn"-> {
+                                    if ((newX == oldX +1 || newX == oldX -1) && newY == oldY - 1 && !whiteTurn){
+                                        this.removeFromParent()
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
+                                        lastClickedPiece.moved = false
+                                        clicked = false
+                                        whiteTurn = true
+                                    }
+                                }
                             }
+
                         }
                     }
                     println("About to take piece: ${this.name} from $lastClicked")
@@ -115,6 +146,20 @@ fun Board.move(pair: Pair<Int, Int>) {
                             lastClickedPiece.moved = true
                             whiteTurn = false
 
+                        }
+                    }
+                    "Rook"->{
+                        if (newY == oldY && newX != oldX && whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = false
+                        }
+                        else if (newX == oldX && newY != oldY && whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = false
                         }
                     }
 
