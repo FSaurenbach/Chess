@@ -17,7 +17,7 @@ class Board : Container() {
                 addChild(rect!!)
                 rectsBoard[i to j] = rect!!
                 rect.onUp {
-                    checkMove(i to j)
+                    move(i to j)
                 }
                 rect!!.onCollision {
                     if (it is Piece) {
