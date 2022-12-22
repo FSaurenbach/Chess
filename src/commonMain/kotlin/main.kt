@@ -9,6 +9,7 @@ var globalHeight = 1024
 val fieldSize: Double = globalWith / 8.0
 var clicked = false
 var lastClicked: String = ""
+var whiteTurn = true
 
 suspend fun main() = Korge(width = globalWith, height = globalHeight, bgcolor = Colors["#2b2b2b"]) {
     val sceneContainer = sceneContainer()
