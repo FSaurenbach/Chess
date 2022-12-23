@@ -89,14 +89,23 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                 "Knight"-> {
                                     if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 2 || newY == oldY - 2) && whiteTurn){
                                         this.removeFromParent()
-                                        lastClickedPiece.setOldPositionPair(newX!! to newY)
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = false
                                     }
                                     else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && whiteTurn){
                                         this.removeFromParent()
-                                        lastClickedPiece.setOldPositionPair(newX to newY!!)
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = false
+                                    }
+                                }
+                                "Bishop"-> {
+                                    if (newX != oldX && newY != oldY && whiteTurn){
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX!! to newY!!)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = false
@@ -137,14 +146,28 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                 "Knight"-> {
                                     if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 2 || newY == oldY - 2) && !whiteTurn){
                                         this.removeFromParent()
-                                        lastClickedPiece.setOldPositionPair(newX!! to newY)
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = true
                                     }
                                     else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && !whiteTurn){
                                         this.removeFromParent()
-                                        lastClickedPiece.setOldPositionPair(newX to newY!!)
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = true
+                                    }
+                                }
+                                "Bishop"-> {
+                                    // Check if there's no piece in the way
+
+
+                                    if (newX != oldX && newY != oldY && !whiteTurn){
+
+
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX!! to newY!!)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = true
@@ -225,6 +248,20 @@ fun Board.move(pair: Pair<Int, Int>) {
                             whiteTurn = false
                         }
                     }
+                    "Bishop"->{
+                        if (newX - oldX == newY - oldY && whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = false
+                        }
+                        else if (newX - oldX == oldY - newY && whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = false
+                        }
+                    }
 
                 }
             }
@@ -269,6 +306,20 @@ fun Board.move(pair: Pair<Int, Int>) {
                             whiteTurn = true
                         }
                         else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && !whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = true
+                        }
+                    }
+                    "Bishop"->{
+                        if (newX - oldX == newY - oldY && !whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = true
+                        }
+                        else if (newX - oldX == oldY - newY && !whiteTurn){
                             lastClickedPiece.setOldPositionPair(newX to newY)
                             rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                             lastClickedPiece.moved = true
