@@ -32,6 +32,10 @@ class GameScene : Scene() {
             Piece("Knight", "Black", 2, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackKnight1"),
             Piece("Knight", "Black", 7, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackKnight2"),
             Piece("Bishop", "White", 3, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteBishop1"),
+            Piece("Bishop", "White", 6, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteBishop2"),
+            Piece("Bishop", "Black", 3, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackBishop1"),
+            Piece("Bishop", "Black", 6, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackBishop2"),
+
 
             )
         addChildren(pieces)
