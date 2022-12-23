@@ -86,6 +86,22 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         whiteTurn = false
                                     }
                                 }
+                                "Knight"-> {
+                                    if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 2 || newY == oldY - 2) && whiteTurn){
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX!! to newY)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = false
+                                    }
+                                    else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && whiteTurn){
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX to newY!!)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = false
+                                    }
+                                }
 
                             }
 
@@ -102,6 +118,39 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         whiteTurn = true
                                     }
                                 }
+                                "Rook"-> {
+                                    if (newY == oldY && newX != oldX && !whiteTurn){
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX!! to newY)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = true
+                                    }
+                                    else if (newX == oldX && newY != oldY && !whiteTurn){
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX to newY!!)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = true
+                                    }
+                                }
+                                "Knight"-> {
+                                    if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 2 || newY == oldY - 2) && !whiteTurn){
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX!! to newY)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = true
+                                    }
+                                    else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && !whiteTurn){
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX to newY!!)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = true
+                                    }
+                                }
+
                             }
 
                         }
@@ -162,6 +211,20 @@ fun Board.move(pair: Pair<Int, Int>) {
                             whiteTurn = false
                         }
                     }
+                    "Knight"->{
+                        if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 2 || newY == oldY - 2) && whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = false
+                        }
+                        else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = false
+                        }
+                    }
 
                 }
             }
@@ -182,6 +245,34 @@ fun Board.move(pair: Pair<Int, Int>) {
                             lastClickedPiece.moved = true
                             whiteTurn = true
 
+                        }
+                    }
+                    "Rook"->{
+                        if (newY == oldY && newX != oldX && !whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = true
+                        }
+                        else if (newX == oldX && newY != oldY && !whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = true
+                        }
+                    }
+                    "Knight"->{
+                        if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 2 || newY == oldY - 2) && !whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = true
+                        }
+                        else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && !whiteTurn){
+                            lastClickedPiece.setOldPositionPair(newX to newY)
+                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                            lastClickedPiece.moved = true
+                            whiteTurn = true
                         }
                     }
 
