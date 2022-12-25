@@ -1,4 +1,4 @@
-import com.soywiz.korge.input.onUp
+import com.soywiz.korge.input.*
 import com.soywiz.korge.view.*
 
 class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image: Image) : Container() {
@@ -71,13 +71,47 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                 }
 
                                 "Rook" -> {
-                                    if (newY == oldY && newX != oldX && whiteTurn) {
+                                    var canMove = true
+                                    // Check if there is a piece in the way but not the last one
+                                    if (newX == oldX) {
+                                        if (newY!! > oldY) {
+                                            for (i in oldY + 1 until newY) {
+                                                if (rectsBoard[newX to i]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        } else {
+                                            for (i in newY + 1 until oldY) {
+                                                if (rectsBoard[newX to i]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        }
+                                    } else if (newY == oldY) {
+                                        if (newX!! > oldX) {
+                                            for (i in oldX + 1 until newX!!) {
+                                                if (rectsBoard[i to newY]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        } else {
+                                            for (i in newX + 1 until oldX) {
+                                                if (rectsBoard[i to newY]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        canMove = false
+                                    }
+
+                                    if (newY == oldY && newX != oldX && whiteTurn && canMove) {
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX!! to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = false
-                                    } else if (newX == oldX && newY != oldY && whiteTurn) {
+                                    } else if (newX == oldX && newY != oldY && whiteTurn && canMove) {
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX to newY!!)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
@@ -120,14 +154,46 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                 }
 
                                 "Rook" -> {
-
-                                    if (newY == oldY && newX != oldX && !whiteTurn) {
+                                    var canMove = true
+                                    // Check if there is a piece in the way but not the last one
+                                    if (newX == oldX) {
+                                        if (newY!! > oldY) {
+                                            for (i in oldY + 1 until newY) {
+                                                if (rectsBoard[newX to i]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        } else {
+                                            for (i in newY + 1 until oldY) {
+                                                if (rectsBoard[newX to i]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        }
+                                    } else if (newY == oldY) {
+                                        if (newX!! > oldX) {
+                                            for (i in oldX + 1 until newX!!) {
+                                                if (rectsBoard[i to newY]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        } else {
+                                            for (i in newX + 1 until oldX) {
+                                                if (rectsBoard[i to newY]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        canMove = false
+                                    }
+                                    if (newY == oldY && newX != oldX && !whiteTurn && canMove) {
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX!! to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = true
-                                    } else if (newX == oldX && newY != oldY && !whiteTurn) {
+                                    } else if (newX == oldX && newY != oldY && !whiteTurn && canMove) {
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX to newY!!)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
