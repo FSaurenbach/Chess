@@ -272,12 +272,32 @@ fun Board.move(pair: Pair<Int, Int>) {
                     }
 
                     "Rook" -> {
-                        if (newY == oldY && newX != oldX && !whiteTurn) {
+                        var canMove = true
+                        var row = oldY
+                        // Move checker but for the black rook
+                        while (row >= newY) {
+                            var col = oldX
+                            while (col >= newX) {
+                                val square = rectsBoard[col to row]
+                                square!!.onCollision {
+                                    if (it.name != lastClickedPiece.name) {
+                                        if (it is Piece) {
+                                            canMove = false
+                                        }
+
+                                    }
+                                }
+                                col--
+                            }
+                            row--
+                        }
+
+                        if (newY == oldY && newX != oldX && !whiteTurn && canMove) {
                             lastClickedPiece.setOldPositionPair(newX to newY)
                             rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                             lastClickedPiece.moved = true
                             whiteTurn = true
-                        } else if (newX == oldX && newY != oldY && !whiteTurn) {
+                        } else if (newX == oldX && newY != oldY && !whiteTurn && canMove) {
                             lastClickedPiece.setOldPositionPair(newX to newY)
                             rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                             lastClickedPiece.moved = true
