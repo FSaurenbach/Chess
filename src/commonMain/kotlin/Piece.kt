@@ -74,6 +74,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
 
                                 "Rook" -> {
                                     var canMove = true
+                                    // Check if there is a piece in the way but not the last one
                                     if (newX == oldX) {
                                         if (newY!! > oldY) {
                                             for (i in oldY + 1 until newY) {
@@ -90,7 +91,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         }
                                     } else if (newY == oldY) {
                                         if (newX!! > oldX) {
-                                            for (i in oldX + 1 until newX) {
+                                            for (i in oldX + 1 until newX!!) {
                                                 if (rectsBoard[i to newY]?.name != null) {
                                                     canMove = false
                                                 }
@@ -112,8 +113,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = false
-                                    }
-                                    else if (newX == oldX && newY != oldY && whiteTurn){
+                                    } else if (newX == oldX && newY != oldY && whiteTurn && canMove) {
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX to newY!!)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
@@ -204,6 +204,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
 
                                 "Rook" -> {
                                     var canMove = true
+                                    // Check if there is a piece in the way but not the last one
                                     if (newX == oldX) {
                                         if (newY!! > oldY) {
                                             for (i in oldY + 1 until newY) {
@@ -220,7 +221,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         }
                                     } else if (newY == oldY) {
                                         if (newX!! > oldX) {
-                                            for (i in oldX + 1 until newX) {
+                                            for (i in oldX + 1 until newX!!) {
                                                 if (rectsBoard[i to newY]?.name != null) {
                                                     canMove = false
                                                 }
@@ -236,14 +237,12 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         canMove = false
                                     }
                                     if (newY == oldY && newX != oldX && !whiteTurn && canMove) {
-
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX!! to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = true
-                                    }
-                                    else if (newX == oldX && newY != oldY && !whiteTurn){
+                                    } else if (newX == oldX && newY != oldY && !whiteTurn && canMove) {
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX to newY!!)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
@@ -251,6 +250,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         whiteTurn = true
                                     }
                                 }
+
                                 "Knight"-> {
                                     if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 2 || newY == oldY - 2) && !whiteTurn){
                                         this.removeFromParent()
@@ -348,14 +348,34 @@ fun Board.move(pair: Pair<Int, Int>) {
 
                         }
                     }
-                    "Rook"->{
-                        if (newY == oldY && newX != oldX && whiteTurn){
+                    "Rook" -> {
+                        var canMove = true
+                        var row = oldY
+                        while (row <= newY) {
+                            var col = oldX
+                            while (col <= newX) {
+                                val square = rectsBoard[col to row]
+                                square!!.onCollision {
+                                    if (it.name != lastClickedPiece.name) {
+                                        if (it is Piece) {
+                                            canMove = false
+                                        }
+
+                                    }
+                                }
+                                col++
+                            }
+                            row++
+                        }
+
+
+
+                        if (newY == oldY && newX != oldX && whiteTurn && canMove) {
                             lastClickedPiece.setOldPositionPair(newX to newY)
                             rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                             lastClickedPiece.moved = true
                             whiteTurn = false
-                        }
-                        else if (newX == oldX && newY != oldY && whiteTurn){
+                        } else if (newX == oldX && newY != oldY && whiteTurn && canMove) {
                             lastClickedPiece.setOldPositionPair(newX to newY)
                             rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                             lastClickedPiece.moved = true
@@ -370,20 +390,6 @@ fun Board.move(pair: Pair<Int, Int>) {
                             whiteTurn = false
                         }
                         else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && whiteTurn){
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = false
-                        }
-                    }
-                    "Bishop"->{
-                        if (newX - oldX == newY - oldY && whiteTurn){
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = false
-                        }
-                        else if (newX - oldX == oldY - newY && whiteTurn){
                             lastClickedPiece.setOldPositionPair(newX to newY)
                             rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                             lastClickedPiece.moved = true
@@ -411,7 +417,6 @@ fun Board.move(pair: Pair<Int, Int>) {
                                 }
                             }
                         } else {
-                            // The bishop is not moving diagonally
                             canMove = false
                         }
 
@@ -445,14 +450,33 @@ fun Board.move(pair: Pair<Int, Int>) {
 
                         }
                     }
-                    "Rook"->{
-                        if (newY == oldY && newX != oldX && !whiteTurn){
+                    "Rook" -> {
+                        var canMove = true
+                        var row = oldY
+                        // Move checker but for the black rook
+                        while (row >= newY) {
+                            var col = oldX
+                            while (col >= newX) {
+                                val square = rectsBoard[col to row]
+                                square!!.onCollision {
+                                    if (it.name != lastClickedPiece.name) {
+                                        if (it is Piece) {
+                                            canMove = false
+                                        }
+
+                                    }
+                                }
+                                col--
+                            }
+                            row--
+                        }
+
+                        if (newY == oldY && newX != oldX && !whiteTurn && canMove) {
                             lastClickedPiece.setOldPositionPair(newX to newY)
                             rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                             lastClickedPiece.moved = true
                             whiteTurn = true
-                        }
-                        else if (newX == oldX && newY != oldY && !whiteTurn){
+                        } else if (newX == oldX && newY != oldY && !whiteTurn && canMove) {
                             lastClickedPiece.setOldPositionPair(newX to newY)
                             rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                             lastClickedPiece.moved = true
