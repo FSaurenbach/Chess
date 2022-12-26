@@ -2,6 +2,7 @@ import com.soywiz.korge.*
 import com.soywiz.korge.scene.*
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.*
+import de.fsaurenbach.chess.GameScene
 
 val rectsBoard = mutableMapOf<Pair<Int, Int>, SolidRect>()
 var globalWith = 1024
