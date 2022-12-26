@@ -82,7 +82,6 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
 
                                 "Rook" -> {
                                     var canMove = true
-                                    // Check if there is a piece in the way but not the last one
                                     if (newX == oldX) {
                                         if (newY!! > oldY) {
                                             for (i in oldY + 1 until newY) {
@@ -151,30 +150,25 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                     val b = 9
 
                                     if (abs(newX!! - oldX) == abs(newY!! - oldY)) {
-                                        // Bishop is moving in one of the four diagonal directions
                                         if (newX > oldX && newY > oldY) {
-                                            // Bishop is moving in the top-right direction
                                             for (i in b until abs(newX - oldX) + 1) {
                                                 if (rectsBoard[oldX + i to oldY + i]?.name != null) {
                                                     canMove = false
                                                 }
                                             }
                                         } else if (newX > oldX && newY < oldY) {
-                                            // Bishop is moving in the bottom-right direction
                                             for (i in b until abs(newX - oldX) + 1) {
                                                 if (rectsBoard[oldX + i to oldY - i]?.name != null) {
                                                     canMove = false
                                                 }
                                             }
                                         } else if (newX < oldX && newY > oldY) {
-                                            // Bishop is moving in the top-left direction
                                             for (i in b until abs(newX - oldX) + 1) {
                                                 if (rectsBoard[oldX - i to oldY + i]?.name != null) {
                                                     canMove = false
                                                 }
                                             }
                                         } else if (newX < oldX && newY < oldY) {
-                                            // Bishop is moving in the bottom-left direction
                                             for (i in b until abs(newX - oldX) + 1) {
                                                 if (rectsBoard[oldX - i to oldY - i]?.name != null) {
                                                     canMove = false
@@ -182,7 +176,6 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                             }
                                         }
                                     } else {
-                                        // Bishop is not moving diagonally
                                         canMove = false
                                     }
 
@@ -215,7 +208,6 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
 
                                 "Rook" -> {
                                     var canMove = true
-                                    // Check if there is a piece in the way but not the last one
                                     if (newX == oldX) {
                                         if (newY!! > oldY) {
                                             for (i in oldY + 1 until newY) {
@@ -280,35 +272,44 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
 
                                 "Bishop" -> {
                                     var canMove = true
+                                    var b = 9
                                     if (abs(newX!! - oldX) == abs(newY!! - oldY)) {
-                                        // Bishop is moving diagonally
-                                        val dx = newX - oldX
-                                        val dy = newY - oldY
-                                        var row = oldY
-                                        var col = oldX
-                                        while (row != newY && col != newX) {
-                                            row += if (dy > 0) 1 else -1
-                                            col += if (dx > 0) 1 else -1
-                                            val square = rectsBoard[col to row]
-                                            square!!.onCollision {
-                                                if (it.name != lastClickedPiece.name) {
-                                                    if (it is Piece) {
-                                                        canMove = false
-                                                    }
+                                        if (newX > oldX && newY > oldY) {
+                                            for (i in b until abs(newX - oldX) + 1) {
+                                                if (rectsBoard[oldX + i to oldY + i]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        } else if (newX > oldX && newY < oldY) {
+                                            for (i in b until abs(newX - oldX) + 1) {
+                                                if (rectsBoard[oldX + i to oldY - i]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        } else if (newX < oldX && newY > oldY) {
+                                            for (i in b until abs(newX - oldX) + 1) {
+                                                if (rectsBoard[oldX - i to oldY + i]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        } else if (newX < oldX && newY < oldY) {
+                                            for (i in b until abs(newX - oldX) + 1) {
+                                                if (rectsBoard[oldX - i to oldY - i]?.name != null) {
+                                                    canMove = false
                                                 }
                                             }
                                         }
                                     } else {
                                         canMove = false
                                     }
-
-                                    if (canMove) {
+                                    if (canMove && !whiteTurn) {
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
-                                        whiteTurn = !whiteTurn
+                                        whiteTurn = true
                                     }
+
                                 }
 
                             }
@@ -316,7 +317,6 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                         }
                     }
 
-                    println("About to take piece: ${this.name} from $lastClicked")
                     clicked = false
                     lastClicked = ""
                 }

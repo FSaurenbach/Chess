@@ -58,7 +58,6 @@ class Board : Container() {
             val newY = pair.second
             val oldX = lastClickedPiece.getOldPositionPair()!!.first
             val oldY = lastClickedPiece.getOldPositionPair()!!.second
-            println("oldX: $oldX, oldY: $oldY, newX: $newX, newY: $newY")
             clicked = false
             when (lastClickedPiece.color) {
                 "White" -> {
@@ -188,7 +187,6 @@ class Board : Container() {
                         "Rook" -> {
                             var canMove = true
                             var row = oldY
-                            // Move checker but for the black rook
                             while (row >= newY) {
                                 var col = oldX
                                 while (col >= newX) {
@@ -253,7 +251,6 @@ class Board : Container() {
                                     }
                                 }
                             } else {
-                                // The bishop is not moving diagonally
                                 canMove = false
                             }
 
