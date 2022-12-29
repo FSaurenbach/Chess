@@ -190,64 +190,6 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
 
                                 }
 
-                                "Queen" -> {
-                                    if ((newY!! - oldY == 0 && newX!! - oldX != 0) || (newY - oldY != 0 && newX!! - oldX == 0) && whiteTurn) {
-                                        var canMove = true
-                                        var row = oldY
-                                        while (row <= newY - 1) {
-                                            var col = oldX
-                                            while (col <= newX - 1) {
-                                                val square = rectsBoard[col to row]
-                                                square!!.onCollision {
-                                                    if (it.name != lastClickedPiece.name) {
-                                                        if (it is Piece) {
-                                                            canMove = false
-                                                        }
-                                                    }
-                                                }
-                                                col++
-                                            }
-                                            row++
-                                        }
-
-                                        if (canMove) {
-                                            this.removeFromParent()
-                                            lastClickedPiece.setOldPositionPair(newX to newY)
-                                            rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
-                                            lastClickedPiece.moved = true
-                                            whiteTurn = false
-                                        }
-                                    }
-                                    if (newY - oldY != 0 && newX!! - oldX != 0 && whiteTurn) {
-                                        var canMove = true
-                                        val dx = newX - oldX
-                                        val dy = newY - oldY
-                                        val rowStep = if (dy > 0) 1 else -1
-                                        val colStep = if (dx > 0) 1 else -1
-                                        var row = oldY + rowStep
-                                        var col = oldX + colStep
-                                        while (row != newY && col != newX) {
-                                            val square = rectsBoard[col to row]
-                                            square!!.onCollision {
-                                                if (it.name != lastClickedPiece.name) {
-                                                    if (it is Piece) {
-                                                        canMove = false
-                                                    }
-                                                }
-                                            }
-                                            row += rowStep
-                                            col += colStep
-                                        }
-                                        if (canMove) {
-                                            this.removeFromParent()
-                                            lastClickedPiece.setOldPositionPair(newX to newY)
-                                            rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
-                                            lastClickedPiece.moved = true
-                                            whiteTurn = !whiteTurn
-                                        }
-                                    }
-
-                                }
                             }
                         }
 
@@ -373,22 +315,19 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                             }
 
                         }
-
-
                     }
+
                     clicked = false
                     lastClicked = ""
                 }
-
             }
 
-
         }
+
+
     }
+
 }
-
-
-
 
 
 
