@@ -1,5 +1,15 @@
+package de.fsaurenbach.chess
+
+import clicked
 import com.soywiz.korge.input.*
 import com.soywiz.korge.view.*
+import fieldSize
+import globalHeight
+import globalWith
+import lastClicked
+import rectsBoard
+import whiteTurn
+import kotlin.math.*
 
 class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image: Image) : Container() {
     private var piece = image
@@ -72,7 +82,6 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
 
                                 "Rook" -> {
                                     var canMove = true
-                                    // Check if there is a piece in the way but not the last one
                                     if (newX == oldX) {
                                         if (newY!! > oldY) {
                                             for (i in oldY + 1 until newY) {
@@ -89,7 +98,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         }
                                     } else if (newY == oldY) {
                                         if (newX!! > oldX) {
-                                            for (i in oldX + 1 until newX!!) {
+                                            for (i in oldX + 1 until newX) {
                                                 if (rectsBoard[i to newY]?.name != null) {
                                                     canMove = false
                                                 }
@@ -123,21 +132,54 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                 "Knight" -> {
                                     if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 2 || newY == oldY - 2) && whiteTurn) {
                                         this.removeFromParent()
-                                        lastClickedPiece.setOldPositionPair(newX!! to newY)
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = false
                                     } else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && whiteTurn) {
                                         this.removeFromParent()
-                                        lastClickedPiece.setOldPositionPair(newX to newY!!)
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = false
                                     }
                                 }
 
-                            }
+                                "Bishop" -> {
+                                    var canMove = true
+                                    newX!!; newY!!
+                                    val dx = newX - oldX
+                                    val dy = newY - oldY
+                                    if (abs(dx) == abs(dy)) {
+                                        var row = oldY
+                                        var col = oldX
+                                        while (row != newY-1 && col != newX-1) {
+                                            row += if (dy > 0) 1 else -1
+                                            col += if (dx > 0) 1 else -1
+                                            val square = rectsBoard[col to row]
+                                            square!!.onCollision {
+                                                if (it.name != lastClickedPiece.name) {
+                                                    if (it is Piece) {
+                                                        canMove = false
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        canMove = false
+                                    }
 
+                                    if (canMove && whiteTurn) {
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = false
+                                    }
+
+                                }
+
+                            }
                         }
 
                         "Black" -> {
@@ -155,7 +197,6 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
 
                                 "Rook" -> {
                                     var canMove = true
-                                    // Check if there is a piece in the way but not the last one
                                     if (newX == oldX) {
                                         if (newY!! > oldY) {
                                             for (i in oldY + 1 until newY) {
@@ -172,7 +213,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         }
                                     } else if (newY == oldY) {
                                         if (newX!! > oldX) {
-                                            for (i in oldX + 1 until newX!!) {
+                                            for (i in oldX + 1 until newX) {
                                                 if (rectsBoard[i to newY]?.name != null) {
                                                     canMove = false
                                                 }
@@ -205,24 +246,66 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                 "Knight" -> {
                                     if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 2 || newY == oldY - 2) && !whiteTurn) {
                                         this.removeFromParent()
-                                        lastClickedPiece.setOldPositionPair(newX!! to newY)
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = true
                                     } else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && !whiteTurn) {
                                         this.removeFromParent()
-                                        lastClickedPiece.setOldPositionPair(newX to newY!!)
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = true
                                     }
                                 }
 
+                                "Bishop" -> {
+                                    var canMove = true
+                                    var b = 9
+                                    if (abs(newX!! - oldX) == abs(newY!! - oldY)) {
+                                        if (newX > oldX && newY > oldY) {
+                                            for (i in b until abs(newX - oldX) + 1) {
+                                                if (rectsBoard[oldX + i to oldY + i]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        } else if (newX > oldX && newY < oldY) {
+                                            for (i in b until abs(newX - oldX) + 1) {
+                                                if (rectsBoard[oldX + i to oldY - i]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        } else if (newX < oldX && newY > oldY) {
+                                            for (i in b until abs(newX - oldX) + 1) {
+                                                if (rectsBoard[oldX - i to oldY + i]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        } else if (newX < oldX && newY < oldY) {
+                                            for (i in b until abs(newX - oldX) + 1) {
+                                                if (rectsBoard[oldX - i to oldY - i]?.name != null) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        canMove = false
+                                    }
+                                    if (canMove && !whiteTurn) {
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
+                                        rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = true
+                                    }
+
+                                }
+
                             }
 
                         }
                     }
-                    println("About to take piece: ${this.name} from $lastClicked")
+
                     clicked = false
                     lastClicked = ""
                 }
@@ -234,162 +317,3 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
     }
 
 }
-
-fun Board.move(pair: Pair<Int, Int>) {
-    if (clicked) {
-        val lastClickedPiece: Piece = (stage!!.findViewByName(lastClicked) as Piece?)!!
-        val newX = pair.first
-        val newY = pair.second
-        val oldX = lastClickedPiece.getOldPositionPair()!!.first
-        val oldY = lastClickedPiece.getOldPositionPair()!!.second
-        println("oldX: $oldX, oldY: $oldY, newX: $newX, newY: $newY")
-        clicked = false
-        when (lastClickedPiece.color) {
-            "White" -> {
-                when (lastClickedPiece.type) {
-                    "Pawn" -> {
-                        if (newX == oldX && newY == oldY + 1 && whiteTurn) {
-                            lastClickedPiece.pawnFirstMove = false
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = false
-                        } else if (newX == oldX && newY == oldY + 2 && lastClickedPiece.pawnFirstMove && whiteTurn) {
-                            lastClickedPiece.pawnFirstMove = false
-
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = false
-
-                        }
-                    }
-
-                    "Rook" -> {
-                        var canMove = true
-                        var row = oldY
-                        while (row <= newY) {
-                            var col = oldX
-                            while (col <= newX) {
-                                val square = rectsBoard[col to row]
-                                square!!.onCollision {
-                                    if (it.name != lastClickedPiece.name) {
-                                        if (it is Piece) {
-                                            canMove = false
-                                        }
-
-                                    }
-                                }
-                                col++
-                            }
-                            row++
-                        }
-
-
-
-                        if (newY == oldY && newX != oldX && whiteTurn && canMove) {
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = false
-                        } else if (newX == oldX && newY != oldY && whiteTurn && canMove) {
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = false
-                        }
-                    }
-
-                    "Knight" -> {
-                        if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 2 || newY == oldY - 2) && whiteTurn) {
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = false
-                        } else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && whiteTurn) {
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = false
-                        }
-                    }
-
-                }
-            }
-
-            "Black" -> {
-                when (lastClickedPiece.type) {
-                    "Pawn" -> {
-                        if (newX == oldX && newY == oldY - 1 && !whiteTurn) {
-                            lastClickedPiece.pawnFirstMove = false
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = true
-                        } else if (newX == oldX && newY == oldY - 2 && lastClickedPiece.pawnFirstMove && !whiteTurn) {
-                            lastClickedPiece.pawnFirstMove = false
-
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = true
-
-                        }
-                    }
-
-                    "Rook" -> {
-                        var canMove = true
-                        var row = oldY
-                        // Move checker but for the black rook
-                        while (row >= newY) {
-                            var col = oldX
-                            while (col >= newX) {
-                                val square = rectsBoard[col to row]
-                                square!!.onCollision {
-                                    if (it.name != lastClickedPiece.name) {
-                                        if (it is Piece) {
-                                            canMove = false
-                                        }
-
-                                    }
-                                }
-                                col--
-                            }
-                            row--
-                        }
-
-                        if (newY == oldY && newX != oldX && !whiteTurn && canMove) {
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = true
-                        } else if (newX == oldX && newY != oldY && !whiteTurn && canMove) {
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = true
-                        }
-                    }
-
-                    "Knight" -> {
-                        if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 2 || newY == oldY - 2) && !whiteTurn) {
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = true
-                        } else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && !whiteTurn) {
-                            lastClickedPiece.setOldPositionPair(newX to newY)
-                            rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                            lastClickedPiece.moved = true
-                            whiteTurn = true
-                        }
-                    }
-
-                }
-            }
-        }
-
-
-    }
-}
-
