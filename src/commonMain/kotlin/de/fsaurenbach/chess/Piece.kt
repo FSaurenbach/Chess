@@ -147,31 +147,21 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
 
                                 "Bishop" -> {
                                     var canMove = true
-                                    val b = 9
-
-                                    if (abs(newX!! - oldX) == abs(newY!! - oldY)) {
-                                        if (newX > oldX && newY > oldY) {
-                                            for (i in b until abs(newX - oldX) + 1) {
-                                                if (rectsBoard[oldX + i to oldY + i]?.name != null) {
-                                                    canMove = false
-                                                }
-                                            }
-                                        } else if (newX > oldX && newY < oldY) {
-                                            for (i in b until abs(newX - oldX) + 1) {
-                                                if (rectsBoard[oldX + i to oldY - i]?.name != null) {
-                                                    canMove = false
-                                                }
-                                            }
-                                        } else if (newX < oldX && newY > oldY) {
-                                            for (i in b until abs(newX - oldX) + 1) {
-                                                if (rectsBoard[oldX - i to oldY + i]?.name != null) {
-                                                    canMove = false
-                                                }
-                                            }
-                                        } else if (newX < oldX && newY < oldY) {
-                                            for (i in b until abs(newX - oldX) + 1) {
-                                                if (rectsBoard[oldX - i to oldY - i]?.name != null) {
-                                                    canMove = false
+                                    newX!!; newY!!;
+                                    val dx = newX - oldX
+                                    val dy = newY - oldY
+                                    if (abs(dx) == abs(dy)) {
+                                        var row = oldY
+                                        var col = oldX
+                                        while (row != newY-1 && col != newX-1) {
+                                            row += if (dy > 0) 1 else -1
+                                            col += if (dx > 0) 1 else -1
+                                            val square = rectsBoard[col to row]
+                                            square!!.onCollision {
+                                                if (it.name != lastClickedPiece.name) {
+                                                    if (it is Piece) {
+                                                        canMove = false
+                                                    }
                                                 }
                                             }
                                         }
@@ -179,14 +169,13 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         canMove = false
                                     }
 
-                                    if (abs(newX - oldX) == abs(newY - oldY) && whiteTurn && canMove) {
+                                    if (canMove && whiteTurn) {
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
-                                        whiteTurn = false
+                                        whiteTurn = !whiteTurn
                                     }
-
 
                                 }
 
@@ -272,7 +261,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
 
                                 "Bishop" -> {
                                     var canMove = true
-                                    val b = 9
+                                    var b = 9
                                     if (abs(newX!! - oldX) == abs(newY!! - oldY)) {
                                         if (newX > oldX && newY > oldY) {
                                             for (i in b until abs(newX - oldX) + 1) {
@@ -328,6 +317,5 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
     }
 
 }
-
 
 

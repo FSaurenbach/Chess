@@ -58,6 +58,7 @@ class Board : Container() {
             val newY = pair.second
             val oldX = lastClickedPiece.getOldPositionPair()!!.first
             val oldY = lastClickedPiece.getOldPositionPair()!!.second
+            println("oldX: $oldX, oldY: $oldY, newX: $newX, newY: $newY")
             clicked = false
             when (lastClickedPiece.color) {
                 "White" -> {
@@ -160,73 +161,6 @@ class Board : Container() {
                             }
                         }
 
-                        "Queen" -> {
-                            if ((newY-oldY == 0 && newX-oldX != 0)|| (newY-oldY != 0 && newX-oldX == 0 ) && whiteTurn){
-                                var canMove = true
-                                var row = oldY
-                                while (row <= newY) {
-                                    var col = oldX
-                                    while (col <= newX) {
-                                        val square = rectsBoard[col to row]
-                                        square!!.onCollision {
-                                            if (it.name != lastClickedPiece.name) {
-                                                if (it is Piece) {
-                                                    canMove = false
-                                                }
-
-                                            }
-                                        }
-                                        col++
-                                    }
-                                    row++
-                                }
-
-
-
-                                if (newY == oldY && newX != oldX && whiteTurn && canMove) {
-                                    lastClickedPiece.setOldPositionPair(newX to newY)
-                                    rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                                    lastClickedPiece.moved = true
-                                    whiteTurn = false
-                                } else if (newX == oldX && newY != oldY && whiteTurn && canMove) {
-                                    lastClickedPiece.setOldPositionPair(newX to newY)
-                                    rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                                    lastClickedPiece.moved = true
-                                    whiteTurn = false
-                                }
-                            }
-                            if (newY-oldY != 0 && newX-oldX != 0 && whiteTurn){
-                                var canMove = true
-                                val dx = newX - oldX
-                                val dy = newY - oldY
-                                if (abs(dx) == abs(dy)) {
-                                    var row = oldY
-                                    var col = oldX
-                                    while (row != newY && col != newX) {
-                                        row += if (dy > 0) 1 else -1
-                                        col += if (dx > 0) 1 else -1
-                                        val square = rectsBoard[col to row]
-                                        square!!.onCollision {
-                                            if (it.name != lastClickedPiece.name) {
-                                                if (it is Piece) {
-                                                    canMove = false
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    canMove = false
-                                }
-
-                                if (canMove) {
-                                    lastClickedPiece.setOldPositionPair(newX to newY)
-                                    rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                                    lastClickedPiece.moved = true
-                                    whiteTurn = !whiteTurn
-                                }
-                            }
-
-                        }
 
                     }
                 }
@@ -254,6 +188,7 @@ class Board : Container() {
                         "Rook" -> {
                             var canMove = true
                             var row = oldY
+                            // Move checker but for the black rook
                             while (row >= newY) {
                                 var col = oldX
                                 while (col >= newX) {
@@ -318,6 +253,7 @@ class Board : Container() {
                                     }
                                 }
                             } else {
+                                // The bishop is not moving diagonally
                                 canMove = false
                             }
 
@@ -326,73 +262,6 @@ class Board : Container() {
                                 rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                                 lastClickedPiece.moved = true
                                 whiteTurn = !whiteTurn
-                            }
-                        }
-
-                        "Queen" -> {
-                            if ((newY-oldY == 0 && newX-oldX != 0)|| (newY-oldY != 0 && newX-oldX == 0 ) && !whiteTurn){
-                                var canMove = true
-                                var row = oldY
-                                while (row <= newY) {
-                                    var col = oldX
-                                    while (col <= newX) {
-                                        val square = rectsBoard[col to row]
-                                        square!!.onCollision {
-                                            if (it.name != lastClickedPiece.name) {
-                                                if (it is Piece) {
-                                                    canMove = false
-                                                }
-
-                                            }
-                                        }
-                                        col++
-                                    }
-                                    row++
-                                }
-
-
-
-                                if (newY == oldY && newX != oldX && canMove) {
-                                    lastClickedPiece.setOldPositionPair(newX to newY)
-                                    rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                                    lastClickedPiece.moved = true
-                                    whiteTurn = true
-                                } else if (newX == oldX && newY != oldY && canMove) {
-                                    lastClickedPiece.setOldPositionPair(newX to newY)
-                                    rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                                    lastClickedPiece.moved = true
-                                    whiteTurn = true
-                                }
-                            }
-                            if (newY-oldY != 0 && newX-oldX != 0 && !whiteTurn){
-                                var canMove = true
-                                val dx = newX - oldX
-                                val dy = newY - oldY
-                                if (abs(dx) == abs(dy)) {
-                                    var row = oldY
-                                    var col = oldX
-                                    while (row != newY && col != newX) {
-                                        row += if (dy > 0) 1 else -1
-                                        col += if (dx > 0) 1 else -1
-                                        val square = rectsBoard[col to row]
-                                        square!!.onCollision {
-                                            if (it.name != lastClickedPiece.name) {
-                                                if (it is Piece) {
-                                                    canMove = false
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    canMove = false
-                                }
-
-                                if (canMove) {
-                                    lastClickedPiece.setOldPositionPair(newX to newY)
-                                    rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
-                                    lastClickedPiece.moved = true
-                                    whiteTurn = true
-                                }
                             }
                         }
                     }
