@@ -17,36 +17,35 @@ class Board : Container() {
     private var rect: SolidRect? = null
 
     init {
-        for (i in 0..7)
-            for (j in 0..7) {
-                rect = SolidRect(fieldSize, fieldSize, if ((j + i) % 2 != 0) black else white)
-                rect!!.xy(i * fieldSize, j * fieldSize)
-                rect!!.name = "Board"
-                addChild(rect!!)
-                rectsBoard[i to j] = rect!!
-                rect.onUp {
-                    move(i to j)
-                }
-                rect!!.onCollision {
-                    if (it is Piece) {
-                        if (it.moved) {
-                            it.setOldPositionPair(i to j)
-                            it.moved = false
-                        }
+        for (i in 0..7) for (j in 0..7) {
+            rect = SolidRect(fieldSize, fieldSize, if ((j + i) % 2 != 0) black else white)
+            rect!!.xy(i * fieldSize, j * fieldSize)
+            rect!!.name = "Board"
+            addChild(rect!!)
+            rectsBoard[i to j] = rect!!
+            rect.onUp {
+                move(i to j)
+            }
+            rect!!.onCollision {
+                if (it is Piece) {
+                    if (it.moved) {
+                        it.setOldPositionPair(i to j)
+                        it.moved = false
                     }
                 }
             }
+        }
         for (i in 0..7) {
-            text("${8 - i}", textSize = 25.0, color = if (i % 2 != 0) black else white)
-                .xy(8 * fieldSize - 15.0, 1 + i * fieldSize)
-                .addTo(this)
+            text("${8 - i}", textSize = 25.0, color = if (i % 2 != 0) black else white).xy(
+                8 * fieldSize - 15.0,
+                1 + i * fieldSize
+            ).addTo(this)
         }
         val letters = "abcdefgh"
         for (i in 0..7) {
             text(letters[i] + "", textSize = 25.0, color = if (i % 2 != 0) black else white)
 
-                .xy(3 + i * fieldSize, 8 * fieldSize - 30.0)
-                .addTo(this)
+                .xy(3 + i * fieldSize, 8 * fieldSize - 30.0).addTo(this)
         }
 
     }
@@ -153,11 +152,72 @@ class Board : Container() {
                                 canMove = false
                             }
 
-                            if (canMove) {
+                            if (canMove && whiteTurn) {
                                 lastClickedPiece.setOldPositionPair(newX to newY)
                                 rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                                 lastClickedPiece.moved = true
-                                whiteTurn = !whiteTurn
+                                whiteTurn = false
+                            }
+                        }
+
+                        "Queen" -> {
+                            var canMove = true
+                            val dx = newX - oldX
+                            val dy = newY - oldY
+                            /* Rook like movement */
+
+                            if (((newY == oldY && newX != oldX) || (newY != oldY && newX == oldX)) && whiteTurn) {
+                                var row = oldY
+                                while (row <= newY) {
+                                    var col = oldX
+                                    while (col <= newX) {
+                                        val square = rectsBoard[col to row]
+                                        square!!.onCollision {
+                                            if (it.name != lastClickedPiece.name) {
+                                                if (it is Piece) {
+                                                    canMove = false
+                                                }
+
+                                            }
+                                        }
+                                        col++
+                                    }
+                                    row++
+                                }
+                            }
+
+                            /* Bishop like movement */
+                            else if (newY != oldY && newX != oldX && whiteTurn) {
+                                if (abs(dx) == abs(dy)) {
+                                    var row = oldY
+                                    var col = oldX
+                                    while (row != newY && col != newX) {
+                                        row += if (dy > 0) 1 else -1
+                                        col += if (dx > 0) 1 else -1
+                                        val square = rectsBoard[col to row]
+                                        square!!.onCollision {
+                                            if (it.name != lastClickedPiece.name) {
+                                                if (it is Piece) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    canMove = false
+                                }
+
+                            } else {
+                                canMove = false
+                            }
+
+
+
+                            if (canMove && whiteTurn) {
+                                lastClickedPiece.setOldPositionPair(newX to newY)
+                                rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                                lastClickedPiece.moved = true
+                                whiteTurn = false
                             }
                         }
 
@@ -253,15 +313,86 @@ class Board : Container() {
                                     }
                                 }
                             } else {
-                                // The bishop is not moving diagonally
                                 canMove = false
                             }
 
-                            if (canMove) {
+                            if (canMove && !whiteTurn) {
                                 lastClickedPiece.setOldPositionPair(newX to newY)
                                 rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                                 lastClickedPiece.moved = true
-                                whiteTurn = !whiteTurn
+                                whiteTurn = true
+                            }
+                        }
+
+                        "Queen" -> {
+                            var canMove = true
+                            val dx = newX - oldX
+                            val dy = newY - oldY
+                            /* Rook like movement */
+                            if (newY == oldY && newX != oldX) {
+                                var row = oldY
+                                while (row >= newY) {
+                                    var col = oldX
+                                    while (col >= newX) {
+                                        val square = rectsBoard[col to row]
+                                        square!!.onCollision {
+                                            if (it.name != lastClickedPiece.name) {
+                                                if (it is Piece) {
+                                                    canMove = false
+                                                }
+
+                                            }
+                                        }
+                                        col--
+                                    }
+                                    row--
+                                }
+                            } else if (newX == oldX && newY != oldY) {
+                                var row = oldY
+                                while (row >= newY) {
+                                    var col = oldX
+                                    while (col >= newX) {
+                                        val square = rectsBoard[col to row]
+                                        square!!.onCollision {
+                                            if (it.name != lastClickedPiece.name) {
+                                                if (it is Piece) {
+                                                    canMove = false
+                                                }
+
+                                            }
+                                        }
+                                        col--
+                                    }
+                                    row--
+                                }
+
+                            }
+                            /* Bishop like movement */
+                            else if (newX != oldX && newY != oldY) {
+                                if (abs(dx) == abs(dy)) {
+                                    var row = oldY
+                                    var col = oldX
+                                    while (row != newY && col != newX) {
+                                        row += if (dy > 0) 1 else -1
+                                        col += if (dx > 0) 1 else -1
+                                        val square = rectsBoard[col to row]
+                                        square!!.onCollision {
+                                            if (it.name != lastClickedPiece.name) {
+                                                if (it is Piece) {
+                                                    canMove = false
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                canMove = false
+                            }
+                            if (canMove && !whiteTurn) {
+                                lastClickedPiece.setOldPositionPair(newX to newY)
+                                rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                                lastClickedPiece.moved = true
+                                whiteTurn = true
                             }
                         }
                     }

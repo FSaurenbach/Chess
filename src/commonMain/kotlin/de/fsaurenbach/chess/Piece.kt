@@ -261,7 +261,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
 
                                 "Bishop" -> {
                                     var canMove = true
-                                    var b = 9
+                                    val b = 9
                                     if (abs(newX!! - oldX) == abs(newY!! - oldY)) {
                                         if (newX > oldX && newY > oldY) {
                                             for (i in b until abs(newX - oldX) + 1) {
