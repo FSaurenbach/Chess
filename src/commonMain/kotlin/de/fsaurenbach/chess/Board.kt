@@ -1,14 +1,14 @@
 package de.fsaurenbach.chess
 
 import clicked
-import com.soywiz.korge.input.*
+import com.soywiz.korge.input.onUp
 import com.soywiz.korge.view.*
-import com.soywiz.korim.color.*
+import com.soywiz.korim.color.Colors
 import fieldSize
 import lastClicked
 import rectsBoard
 import whiteTurn
-import kotlin.math.*
+import kotlin.math.abs
 
 class Board : Container() {
 
@@ -221,7 +221,77 @@ class Board : Container() {
                             }
                         }
 
+                        "King" -> {
+                            var canMove = true
+                            val dx = newX - oldX
+                            val dy = newY - oldY
+                            println("dx: $dx, dy: $dy")
+                            /* Rook like movement but only one square at a time*/
 
+                            if (((newY == oldY && newX != oldX) || (newY != oldY && newX == oldX))) {
+                                if (abs(dx) == 1 || abs(dy) == 1) {
+                                    var row = oldY
+                                    while (row <= newY) {
+                                        var col = oldX
+                                        while (col <= newX) {
+                                            val square = rectsBoard[col to row]
+                                            square!!.onCollision {
+                                                if (it.name != lastClickedPiece.name) {
+                                                    if (it is Piece) {
+                                                        canMove = false
+                                                        return@onCollision
+                                                    }
+
+                                                }
+                                            }
+                                            col++
+                                        }
+                                        row++
+                                    }
+                                } else {
+                                    canMove = false
+                                }
+                            }
+
+                            /* Bishop like movement but only one square at a time*/
+                            else if (newY != oldY && newX != oldX) {
+
+                                if (abs(dx) == abs(dy)) {
+                                    if (abs(dx) == 1) {
+                                        var row = oldY
+                                        var col = oldX
+                                        while (row != newY && col != newX) {
+                                            row += if (dy > 0) 1 else -1
+                                            col += if (dx > 0) 1 else -1
+                                            val square = rectsBoard[col to row]
+
+                                            square!!.onCollision {
+                                                if (it.name != lastClickedPiece.name) {
+                                                    if (it is Piece) {
+                                                        canMove = false
+                                                    }
+                                                }
+                                            }
+
+
+                                        }
+                                    } else {
+                                        canMove = false
+                                    }
+                                } else {
+                                    canMove = false
+                                }
+
+                            } else {
+                                canMove = false
+                            }
+                            if (canMove && whiteTurn) {
+                                lastClickedPiece.setOldPositionPair(newX to newY)
+                                rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                                lastClickedPiece.moved = true
+                                whiteTurn = false
+                            }
+                        }
                     }
                 }
 

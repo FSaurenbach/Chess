@@ -25,6 +25,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
         piece.scaledWidth = fieldSize / 1.000001
         piece.scaledHeight = fieldSize / 1.000001
         piece.xy(pieceX * globalWith / 8, pieceY * globalHeight / 8)
+
         addChild(piece)
         centerPiece(piece)
         move(piece)
@@ -153,7 +154,7 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                     if (abs(dx) == abs(dy)) {
                                         var row = oldY
                                         var col = oldX
-                                        while (row != newY-1 && col != newX-1) {
+                                        while (row != newY - 1 && col != newX - 1) {
                                             row += if (dy > 0) 1 else -1
                                             col += if (dx > 0) 1 else -1
                                             val square = rectsBoard[col to row]
