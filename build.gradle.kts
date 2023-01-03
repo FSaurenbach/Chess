@@ -1,21 +1,17 @@
 import com.soywiz.korge.gradle.*
 
 plugins {
-	alias(libs.plugins.korge)
     java
+    id("com.soywiz.korge") version "3.4.0"
 }
-
+repositories {
+    mavenCentral()
+}
 korge {
 	id = "de.fsrb.chess"
 
 
-	targetAll()
+    targetAll()
 
 	serializationJson()
 }
-
-
-dependencies {
-    add("commonMainApi", project(":deps"))
-}
-

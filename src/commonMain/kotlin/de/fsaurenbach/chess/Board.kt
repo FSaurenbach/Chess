@@ -1,14 +1,16 @@
 package de.fsaurenbach.chess
 
 import clicked
-import com.soywiz.korge.input.onUp
+import com.soywiz.korge.input.*
 import com.soywiz.korge.view.*
-import com.soywiz.korim.color.Colors
+import com.soywiz.korim.color.*
 import fieldSize
 import lastClicked
 import rectsBoard
+import whiteKingCheck
+import whitePieces
 import whiteTurn
-import kotlin.math.abs
+import kotlin.math.*
 
 class Board : Container() {
 
@@ -35,10 +37,10 @@ class Board : Container() {
                 }
             }
         }
+
         for (i in 0..7) {
             text("${8 - i}", textSize = 25.0, color = if (i % 2 != 0) black else white).xy(
-                8 * fieldSize - 15.0,
-                1 + i * fieldSize
+                8 * fieldSize - 15.0, 1 + i * fieldSize
             ).addTo(this)
         }
         val letters = "abcdefgh"
@@ -51,12 +53,19 @@ class Board : Container() {
     }
 
     private fun move(pair: Pair<Int, Int>) {
+        val whiteKing: Piece = (stage!!.findViewByName("WhiteKing") as Piece)
+        val blackKing: Piece = (stage!!.findViewByName("BlackKing") as Piece)
+
         if (clicked) {
+            blackKingInCheck(blackKing)
             val lastClickedPiece: Piece = (stage!!.findViewByName(lastClicked) as Piece?)!!
+
+
             val newX = pair.first
             val newY = pair.second
             val oldX = lastClickedPiece.getOldPositionPair()!!.first
             val oldY = lastClickedPiece.getOldPositionPair()!!.second
+
             println("oldX: $oldX, oldY: $oldY, newX: $newX, newY: $newY")
             clicked = false
             when (lastClickedPiece.color) {
@@ -64,12 +73,13 @@ class Board : Container() {
                     when (lastClickedPiece.type) {
                         "Pawn" -> {
                             if (newX == oldX && newY == oldY + 1 && whiteTurn) {
+
                                 lastClickedPiece.pawnFirstMove = false
                                 lastClickedPiece.setOldPositionPair(newX to newY)
                                 rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
                                 lastClickedPiece.moved = true
                                 whiteTurn = false
-                            } else if (newX == oldX && newY == oldY + 2 && lastClickedPiece.pawnFirstMove && whiteTurn) {
+                            } else if ((newX == oldX) && (newY == (oldY + 2)) && lastClickedPiece.pawnFirstMove && whiteTurn) {
                                 lastClickedPiece.pawnFirstMove = false
 
                                 lastClickedPiece.setOldPositionPair(newX to newY)
@@ -163,8 +173,7 @@ class Board : Container() {
                         "Queen" -> {
                             var canMove = true
                             val dx = newX - oldX
-                            val dy = newY - oldY
-                            /* Rook like movement */
+                            val dy = newY - oldY/* Rook like movement */
 
                             if (((newY == oldY && newX != oldX) || (newY != oldY && newX == oldX)) && whiteTurn) {
                                 var row = oldY
@@ -225,8 +234,7 @@ class Board : Container() {
                             var canMove = true
                             val dx = newX - oldX
                             val dy = newY - oldY
-                            println("dx: $dx, dy: $dy")
-                            /* Rook like movement but only one square at a time*/
+                            println("dx: $dx, dy: $dy")/* Rook like movement but only one square at a time*/
 
                             if (((newY == oldY && newX != oldX) || (newY != oldY && newX == oldX))) {
                                 if (abs(dx) == 1 || abs(dy) == 1) {
@@ -397,8 +405,7 @@ class Board : Container() {
                         "Queen" -> {
                             var canMove = true
                             val dx = newX - oldX
-                            val dy = newY - oldY
-                            /* Rook like movement */
+                            val dy = newY - oldY/* Rook like movement */
                             if (newY == oldY && newX != oldX) {
                                 var row = oldY
                                 while (row >= newY) {
@@ -436,8 +443,7 @@ class Board : Container() {
                                     row--
                                 }
 
-                            }
-                            /* Bishop like movement */
+                            }/* Bishop like movement */
                             else if (newX != oldX && newY != oldY) {
                                 if (abs(dx) == abs(dy)) {
                                     var row = oldY
@@ -465,13 +471,81 @@ class Board : Container() {
                                 whiteTurn = true
                             }
                         }
+                        "King" -> {
+                            if ((newX == oldX + 1 || newX == oldX - 1) && (newY == oldY + 1 || newY == oldY - 1) && !whiteTurn) {
+                                lastClickedPiece.setOldPositionPair(newX to newY)
+                                rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                                lastClickedPiece.moved = true
+                                whiteTurn = true
+                            } else if ((newX == oldX + 1 || newX == oldX - 1) && newY == oldY && !whiteTurn) {
+                                lastClickedPiece.setOldPositionPair(newX to newY)
+                                rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                                lastClickedPiece.moved = true
+                                whiteTurn = true
+                            } else if ((newY == oldY + 1 || newY == oldY - 1) && newX == oldX && !whiteTurn) {
+                                lastClickedPiece.setOldPositionPair(newX to newY)
+                                rectsBoard[pair]?.let { lastClickedPiece.centerOn(it) }
+                                lastClickedPiece.moved = true
+                                whiteTurn = true
+                            }
+                        }
+
                     }
                 }
             }
+            blackKingInCheck(blackKing)
 
 
         }
     }
 
+
+}
+
+fun blackKingInCheck(blackKing: Piece) {
+    val blackKingX = blackKing.getOldPositionPair()!!.first
+    val blackKingY = blackKing.getOldPositionPair()!!.second
+    println(whiteKingCheck)
+    var somethingfound = false
+    for (bp in whitePieces!!) {
+        val bpx = bp.getOldPositionPair()!!.first
+        val bpy = bp.getOldPositionPair()!!.second
+
+        when (bp.type) {
+
+            "Pawn" -> {
+                if (blackKingX == bpx + 1 && blackKingY == bpy + 1) {
+                    whiteKingCheck = true
+                    somethingfound = true
+                } else if (blackKingX == bpx - 1 && blackKingY == bpy + 1) {
+                    whiteKingCheck = true
+                    somethingfound = true
+                }
+            }
+
+            "Knight" -> {
+                if (blackKingX == bpx + 1 && blackKingY == bpy + 2) {
+                    whiteKingCheck = true
+                    somethingfound = true
+                } else if (blackKingX == bpx - 1 && blackKingY == bpy + 2) {
+                    whiteKingCheck = true
+                    somethingfound = true
+                } else if (blackKingX == bpx + 2 && blackKingY == bpy + 1) {
+                    whiteKingCheck = true
+                    somethingfound = true
+                } else if (blackKingX == bpx - 2 && blackKingY == bpy + 1) {
+                    whiteKingCheck = true
+                    somethingfound = true
+                }
+            }
+        }
+    }
+    if (!somethingfound) {
+        whiteKingCheck = false
+    }
+//    if (((whiteKingX == newX + 1) || (whiteKingX == newX - 1)) && whiteKingY == newY + 1) {
+//        println("White King is in check")
+//        whiteKingCheck = true
+//    }
 
 }
