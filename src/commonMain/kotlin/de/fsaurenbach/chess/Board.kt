@@ -54,10 +54,12 @@ class Board : Container() {
 
     private fun move(pair: Pair<Int, Int>) {
         val whiteKing: Piece = (stage!!.findViewByName("WhiteKing") as Piece)
-        val blackKing: Piece = (stage!!.findViewByName("BlackKing") as Piece)
+        val blackKing: Piece? = (stage!!.findViewByName("BlackKing") as Piece)
 
         if (clicked) {
-            blackKingInCheck(blackKing)
+            if (blackKing != null) {
+                blackKingInCheck(blackKing)
+            }
             val lastClickedPiece: Piece = (stage!!.findViewByName(lastClicked) as Piece?)!!
 
 
@@ -173,8 +175,8 @@ class Board : Container() {
                         "Queen" -> {
                             var canMove = true
                             val dx = newX - oldX
-                            val dy = newY - oldY/* Rook like movement */
-
+                            val dy = newY - oldY
+                            /* Rook like movement */
                             if (((newY == oldY && newX != oldX) || (newY != oldY && newX == oldX)) && whiteTurn) {
                                 var row = oldY
                                 while (row <= newY) {
@@ -493,7 +495,9 @@ class Board : Container() {
                     }
                 }
             }
-            blackKingInCheck(blackKing)
+            if (blackKing != null) {
+                blackKingInCheck(blackKing)
+            }
 
 
         }
