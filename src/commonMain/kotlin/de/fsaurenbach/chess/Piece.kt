@@ -348,7 +348,6 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         whiteTurn = false
                                     }
 
-
                                     /* Code for moving to the left and down */
                                     else if (newX == oldX - 1 && newY == oldY + 1) {
                                         this.removeFromParent()
@@ -662,6 +661,50 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         whiteTurn = false
                                     }
                                 }
+                                "King" -> {
+                                    /* Code for moving to the right and down */
+                                    if (newX == oldX + 1 && newY == oldY + 1) {
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
+                                        rectsBoard[newX to newY]?.let {
+                                            lastClickedPiece.centerOn(it)
+                                        }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = false
+                                    }
+
+                                    /* Code for moving to the left and down */
+                                    else if (newX == oldX - 1 && newY == oldY + 1) {
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
+                                        rectsBoard[newX to newY]?.let {
+                                            lastClickedPiece.centerOn(it)
+                                        }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = false
+                                    }
+                                    /* Code for moving to the right and up */
+                                    else if (newX == oldX + 1 && newY == oldY - 1) {
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
+                                        rectsBoard[newX to newY]?.let {
+                                            lastClickedPiece.centerOn(it)
+                                        }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = false
+                                    }
+                                    /* Code for moving to the left and up */
+                                    else if (newX == oldX - 1 && newY == oldY - 1) {
+                                        this.removeFromParent()
+                                        lastClickedPiece.setOldPositionPair(newX to newY)
+                                        rectsBoard[newX to newY]?.let {
+                                            lastClickedPiece.centerOn(it)
+                                        }
+                                        lastClickedPiece.moved = true
+                                        whiteTurn = false
+                                    }
+                                }
+                            }
                             }
                         }
                     }
