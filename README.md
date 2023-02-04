@@ -19,12 +19,9 @@
 
 👤 **Ferdinand Saurenbach**
 
-* Website: fsaurenbach.github.io
+* Website: https://fsaurenbach.github.io
 * Github: [@FSaurenbach](https://github.com/FSaurenbach)
 
 ## Show your support
 
 Give a ⭐️ if this project helped you!
-
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
