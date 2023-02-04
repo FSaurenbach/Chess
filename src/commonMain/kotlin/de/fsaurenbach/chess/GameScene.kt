@@ -3,8 +3,8 @@ package de.fsaurenbach.chess
 import blackPieces
 import com.soywiz.korge.scene.*
 import com.soywiz.korge.view.*
-import com.soywiz.korim.format.*
-import com.soywiz.korio.file.std.*
+import com.soywiz.korim.format.readBitmap
+import com.soywiz.korio.file.std.resourcesVfs
 import whitePieces
 
 class GameScene : Scene() {
@@ -23,10 +23,10 @@ class GameScene : Scene() {
             Piece("Rook", "White", 8, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteRook2"),
             Piece("Knight", "White", 2, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteKnight1"),
             Piece("Knight", "White", 7, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteKnight2"),
-            Piece("Bishop", "White", 5, 5, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteBishop1"),
+            Piece("Bishop", "White", 3, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteBishop1"),
             Piece("Bishop", "White", 6, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteBishop2"),
             Piece("Queen", "White", 4, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteQueen"),
-            Piece("King", "White", 5, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteKing")
+            Piece("King", "White", 5, 5, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteKing")
 
             )
         blackPieces = listOf(
