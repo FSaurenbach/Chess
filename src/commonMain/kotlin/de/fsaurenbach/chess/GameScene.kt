@@ -19,14 +19,15 @@ class GameScene : Scene() {
             Piece("Pawn", "White", 6, 2, image(resourcesVfs["whitePawn.png"].readBitmap())).name("WhitePawn6"),
             Piece("Pawn", "White", 7, 2, image(resourcesVfs["whitePawn.png"].readBitmap())).name("WhitePawn7"),
             Piece("Pawn", "White", 8, 2, image(resourcesVfs["whitePawn.png"].readBitmap())).name("WhitePawn8"),
-            Piece("Rook", "White", 5, 5, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteRook1"),
-            Piece("Rook", "White", 8, 4, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteRook2"),
+            Piece("Rook", "White", 1, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteRook1"),
+            Piece("Rook", "White", 8, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteRook2"),
             Piece("Knight", "White", 2, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteKnight1"),
             Piece("Knight", "White", 7, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteKnight2"),
-            Piece("Bishop", "White", 3, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteBishop1"),
+            Piece("Bishop", "White", 5, 5, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteBishop1"),
             Piece("Bishop", "White", 6, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteBishop2"),
             Piece("Queen", "White", 4, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteQueen"),
-            Piece("King", "White", 5, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteKing"),
+            Piece("King", "White", 5, 1, image(resourcesVfs["apple.png"].readBitmap())).name("WhiteKing")
+
             )
         blackPieces = listOf(
 
@@ -38,18 +39,14 @@ class GameScene : Scene() {
             Piece("Pawn", "Black", 6, 7, image(resourcesVfs["whitePawn.png"].readBitmap())).name("BlackPawn6"),
             Piece("Pawn", "Black", 7, 7, image(resourcesVfs["whitePawn.png"].readBitmap())).name("BlackPawn7"),
             Piece("Pawn", "Black", 8, 7, image(resourcesVfs["whitePawn.png"].readBitmap())).name("BlackPawn8"),
-
             Piece("Rook", "Black", 1, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackRook1"),
             Piece("Rook", "Black", 8, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackRook2"),
-
             Piece("Knight", "Black", 2, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackKnight1"),
             Piece("Knight", "Black", 7, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackKnight2"),
-
             Piece("Bishop", "Black", 3, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackBishop1"),
             Piece("Bishop", "Black", 6, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackBishop2"),
-
-            Piece("Queen", "Black", 4, 8, image(resourcesVfs["blackQueen.png"].readBitmap())).name("BlackQueen"),
-            Piece("King", "Black", 5, 4, image(resourcesVfs["apple.png"].readBitmap())).name("BlackKing")
+            Piece("Queen", "Black", 4, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackQueen"),
+            Piece("King", "Black", 5, 8, image(resourcesVfs["apple.png"].readBitmap())).name("BlackKing")
 
         )
         val pieces = whitePieces!! + blackPieces!!

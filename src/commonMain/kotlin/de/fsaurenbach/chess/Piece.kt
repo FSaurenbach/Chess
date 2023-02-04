@@ -9,7 +9,7 @@ import globalWith
 import lastClicked
 import rectsBoard
 import whiteTurn
-import kotlin.math.*
+import kotlin.math.abs
 
 class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image: Image) : Container() {
     private var piece = image
@@ -76,7 +76,8 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         lastClickedPiece.moved = false
                                         clicked = false
                                         whiteTurn = false
-                                    } else {
+                                    }
+                                    else {
                                         clicked = false
                                         lastClicked = ""
                                     }
@@ -97,9 +98,9 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                             }
                                         }
                                     }
-                                    else if (newX == oldX && newY < oldY){
+                                    else if (newX == oldX && newY < oldY) {
 
-                                        for (i in oldY - 1 downTo newY+1) {
+                                        for (i in oldY - 1 downTo newY + 1) {
                                             val square = rectsBoard[oldX to i]
                                             println("Square: $oldX to $i")
                                             square?.onCollision {
@@ -122,8 +123,8 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                             }
                                         }
                                     }
-                                    else if (newY == oldY && newX < oldX){
-                                        for (i in oldX - 1 downTo newX+1) {
+                                    else if (newY == oldY && newX < oldX) {
+                                        for (i in oldX - 1 downTo newX + 1) {
                                             val square = rectsBoard[i to oldY]
                                             println("Square: $i to $oldY")
                                             square?.onCollision {
@@ -158,7 +159,8 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = false
-                                    } else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && whiteTurn) {
+                                    }
+                                    else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && whiteTurn) {
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
@@ -187,7 +189,8 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                                 }
                                             }
                                         }
-                                    } else {
+                                    }
+                                    else {
                                         canMove = false
                                     }
 
@@ -216,9 +219,9 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                             }
                                         }
                                     }
-                                    else if (newX == oldX && newY < oldY){
+                                    else if (newX == oldX && newY < oldY) {
 
-                                        for (i in oldY - 1 downTo newY+1) {
+                                        for (i in oldY - 1 downTo newY + 1) {
                                             val square = rectsBoard[oldX to i]
                                             println("Square: $oldX to $i")
                                             square?.onCollision {
@@ -241,8 +244,8 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                             }
                                         }
                                     }
-                                    else if (newY == oldY && newX < oldX){
-                                        for (i in oldX - 1 downTo newX+1) {
+                                    else if (newY == oldY && newX < oldX) {
+                                        for (i in oldX - 1 downTo newX + 1) {
                                             val square = rectsBoard[i to oldY]
                                             println("Square: $i to $oldY")
                                             square?.onCollision {
@@ -253,9 +256,56 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         }
                                     }
 
+
+                                    /* Bishop like movement */
+
+                                    /* Code for moving to the right and down */
                                     else if (newX > oldX && newY > oldY) {
                                         for (i in oldX + 1 until newX) {
                                             for (j in oldY + 1 until newY) {
+                                                val square = rectsBoard[i to j]
+                                                println("Square: $i to $j")
+                                                square?.onCollision {
+                                                    if (it is Piece) {
+                                                        canMove = false
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    /* Code for moving to the left and down */
+                                    else if (newX < oldX && newY > oldY) {
+                                        for (i in oldX - 1 downTo newX + 1) {
+                                            for (j in oldY + 1 until newY) {
+                                                val square = rectsBoard[i to j]
+                                                println("Square: $i to $j")
+                                                square?.onCollision {
+                                                    if (it is Piece) {
+                                                        canMove = false
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    /* Code for moving to the right and up */
+                                    else if (newX > oldX && newY < oldY) {
+                                        for (i in oldX + 1 until newX) {
+                                            for (j in oldY - 1 downTo newY + 1) {
+                                                val square = rectsBoard[i to j]
+                                                println("Square: $i to $j")
+                                                square?.onCollision {
+                                                    if (it is Piece) {
+                                                        canMove = false
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    /* Code for moving to the left and up */
+                                    else if (newX < oldX && newY < oldY) {
+                                        for (i in oldX - 1 downTo newX + 1) {
+                                            for (j in oldY - 1 downTo newY + 1) {
                                                 val square = rectsBoard[i to j]
                                                 println("Square: $i to $j")
                                                 square?.onCollision {
@@ -327,7 +377,8 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = true
-                                    } else if (newX == oldX && newY != oldY && !whiteTurn && canMove) {
+                                    }
+                                    else if (newX == oldX && newY != oldY && !whiteTurn && canMove) {
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
@@ -343,7 +394,8 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
                                         lastClickedPiece.moved = true
                                         whiteTurn = true
-                                    } else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && !whiteTurn) {
+                                    }
+                                    else if ((newX == oldX + 2 || newX == oldX - 2) && (newY == oldY + 1 || newY == oldY - 1) && !whiteTurn) {
                                         this.removeFromParent()
                                         lastClickedPiece.setOldPositionPair(newX to newY)
                                         rectsBoard[newX to newY]?.let { lastClickedPiece.centerOn(it) }
@@ -362,26 +414,30 @@ class Piece(var type: String, var color: String, pieceX: Int, pieceY: Int, image
                                                     canMove = false
                                                 }
                                             }
-                                        } else if (newX > oldX && newY < oldY) {
+                                        }
+                                        else if (newX > oldX && newY < oldY) {
                                             for (i in b until abs(newX - oldX) + 1) {
                                                 if (rectsBoard[oldX + i to oldY - i]?.name != null) {
                                                     canMove = false
                                                 }
                                             }
-                                        } else if (newX < oldX && newY > oldY) {
+                                        }
+                                        else if (newX < oldX && newY > oldY) {
                                             for (i in b until abs(newX - oldX) + 1) {
                                                 if (rectsBoard[oldX - i to oldY + i]?.name != null) {
                                                     canMove = false
                                                 }
                                             }
-                                        } else if (newX < oldX && newY < oldY) {
+                                        }
+                                        else if (newX < oldX && newY < oldY) {
                                             for (i in b until abs(newX - oldX) + 1) {
                                                 if (rectsBoard[oldX - i to oldY - i]?.name != null) {
                                                     canMove = false
                                                 }
                                             }
                                         }
-                                    } else {
+                                    }
+                                    else {
                                         canMove = false
                                     }
                                     if (canMove && !whiteTurn) {
